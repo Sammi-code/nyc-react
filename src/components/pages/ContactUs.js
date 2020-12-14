@@ -1,9 +1,20 @@
+<<<<<<< HEAD:src/components/ContactUs.js
 import React, { Component } from "react";
 import TextInputList from "./layout/input/TextInputList";
 import Textarea from "./layout/input/Textarea";
 import PropTypes from "prop-types";
 import "./css/contact-us.css";
 // import axios from 'axios';
+=======
+
+import React, { Component } from 'react';
+import TextInputList from "../layout/input/TextInputList";
+import Textarea from '../layout/input/Textarea';
+import PropTypes from "prop-types"
+import "../css/contact-us.css";
+import axios from 'axios';
+
+>>>>>>> 110ebd636b1577831c467132fc2fd8b23b4a9af6:src/components/pages/ContactUs.js
 
 class ContactUs extends Component {
   state = {
