@@ -6,7 +6,8 @@ import Textarea from '../../../layout/userpageInput/Textarea';
 import SelectInputValue from '../../../layout/userpageInput/SelectInput';
 import "../../../css/userpage.css"
 import { Link } from 'react-router-dom';
-import {loginUser} from "../../action"
+import {editUsers} from "../../action";
+
 
 
 
@@ -14,7 +15,42 @@ export default function Userpage() {
 
 
 
-    const userInfo = useSelector(state => state.userReducer.users[0])
+
+const option=[
+    {
+    value: "Kano", label: "Kano"
+},
+    {value: "Kaduna", label: "Kaduna"
+},
+    {value: "Kastina", label: "Kastina"
+}]
+
+
+// option used for react select
+
+const locationOption=[
+    {
+    value: "Kano", label: "Kano"
+},
+    {value: "Kaduna", label: "Kaduna"
+},
+    {value: "Kastina", label: "Kastina"
+}]
+
+// theme for the custom select
+function customTheme(theme) {
+    return{
+        ...theme,
+        colors:{
+            ...theme.colors,
+            primary25: "orange",
+            primary: " black"
+        }
+    }
+}
+
+
+    const user = useSelector(state => state.userReducer.users[0])
 
 const dispatch =useDispatch()
 // useEffect(() => {
@@ -22,47 +58,91 @@ const dispatch =useDispatch()
    
 // }, [])
 
-    // let userInfo = JSON.parse(localStorage.getItem("user"));
+     let userInfo = JSON.parse(localStorage.getItem("user"));
 
 
     const [USerstate , setUSerstate] = useState({
-        phone:userInfo.phone, 
+        phoneNumber:userInfo.phoneNumber, 
         businessName:userInfo.businessName, 
         email:userInfo.email, 
         website:userInfo.website, 
-        textarea:userInfo.textarea, 
-        location:userInfo.location, 
+        description:userInfo.description, 
+        city:userInfo.city, 
         fax:userInfo.fax,
         state:userInfo.state,
-        category:userInfo.category 
+        userCategory:userInfo.userCategory,
+        displayPicture: userInfo.displayPicture
     });
-    const { phone, businessName, email, website, textarea, location, fax, state, category } = USerstate;
+    const {phoneNumber, businessName, email, website,description, city, fax, state, userCategory ,displayPicture} = USerstate;
 
- function onChange (e) {
+const onChange= (e) =>{
         
         const { name, value } = e.target
-        console.log(value)
         setUSerstate({...USerstate, [name]:value })
 
-
-
     }
+
+    
+    // on change for react select
+
+//   1.
+    const onChangeSelect=(value)=>{
+        setUSerstate({...USerstate,userCategory: value.value})
+    }
+//   2.
+    const onChangeSelects=(value)=>{
+        setUSerstate({...USerstate,state: value.value})
+    }
+
+
+   const handleInputChanged=(reason ,value) =>{
+//     if (reason.action === "set-value") {
+//         return 
+//         setUSerstate({
+            
+//             ...USerstate,value
+//     })
+//     }
+    }
+    // image Loader
+    const imageLoaders=(e)=>{
+        const reader= new FileReader()
+        reader.onload=()=>{
+            if (reader.readyState===2){
+             // console.log(reader.result)
+           
+             setUSerstate({...USerstate,displayPicture:reader.result})
+            }
+        }
+
+        reader.readAsDataURL(e.target.files[0])
+   
+   
+     }
+
+
+    // submitting the form
+
    const onSubmit=(e)=>{
         e.preventDefault()
-
+        const { id ,otp} = userInfo
         const form = {
-            phone,
+            id,
+           otp,
+            phoneNumber,
             businessName, 
             email, 
             website, 
-            textarea, 
-            location, 
+            description, 
+            city, 
             fax,
             state,
-            category
+            userCategory,
+            displayPicture
         }
-        console.log(form)
-        dispatch(loginUser(form))
+        console.log( form)
+        // sending the form to redux store,  edituser is the action called upon
+        dispatch(editUsers({form}))
    }
 
     return (
@@ -86,9 +166,10 @@ const dispatch =useDispatch()
                         <i className=" text-white fas fa-upload fa-2x" />
                     </aside>
                     <div className=" fine col-lg-12" style={{ height: '200px', background: '#ebebe0' }}>
-                        <form style={{ width: '300px' }}>
-                            <div style={{ width: '300px' }} className="custom-file">
-                                <input style={{ width: "150px" }} type="file" className="custom-file-input" name="filename" id="customFile" accept="image/gif, image/jpeg, image/png" />
+                        <form style={{ width: 'inherit' }}>
+                            <div style={{ width: 'inherit' }} className="custom-file">
+                                <input style={{ height: "150px" }} type="file" className="custom-file-input" name="filename" id="customFile" onChange={imageLoaders} accept="image/gif, image/jpeg, image/png" />
+                          <input type="text" name="" value={displayPicture} hidden />
                             </div>
                         </form>
                         <h2>Or drag your file here to upload</h2>
@@ -110,6 +191,7 @@ const dispatch =useDispatch()
                                     id="Business Name"
                                     name="text"
                                     onChange={onChange}
+                                    disabled
                                     placeholder="Business Name " />
 
                                 <TextInput
@@ -119,6 +201,7 @@ const dispatch =useDispatch()
                                     id="email"
                                     placeholder="Email"
                                     name="email"
+                                    disabled
                                 />
 
                             </div>
@@ -126,8 +209,8 @@ const dispatch =useDispatch()
                             <div className="form-row">
                                 <TextInput
                                     className="form-group "
-                                    name="text"
-                                    value={phone}
+                                    name="phoneNumber"
+                                    value={phoneNumber}
                                     id="phone-Number"
                                     onChange={onChange}
                                     placeholder="Phone-Number" />
@@ -143,11 +226,11 @@ const dispatch =useDispatch()
 
                             <div className="form-row">
                                 <Textarea
-                                    name="textarea"
+                                    name="description"
                                     onChange={onChange}
                                     id="textarea"
                                     placeholder="short-description"
-                                    value={textarea}
+                                    value={description}
 
                                 />
                             </div>
@@ -161,47 +244,34 @@ const dispatch =useDispatch()
 
                             <div className="form-row">
 
+                              <SelectInputValue
+                                    name="state"
+                                    id="state"
+                                    // inputValue={state}
+                                 
+                                  onChange={onChangeSelects}
+                                     options={option}
+                                     placeholder="Current State"
+                                     theme={customTheme}
+                                    //  onInputChange={handleInputChanged}
+                                    //  defaultInputValue={state}
+                                /> 
+
+
                                 <SelectInputValue
-                                    name="Location"
-                                    id="city"
-                                    value={state}
-                                    onChange={onChange}
-                                >
+                                    name="Category"
+                                    id="Category"
+                                    // inputValue={userCategory}
+                                    // defaultInputValue={userCategory}
+                                    onChange={onChangeSelect}
+                                    placeholder="Category"
+                                    options= {locationOption}
+                                    theme={customTheme}
+                                    // onInputChange={handleInputChanged}
+                                   
 
-                                    <option value="Abuja">Abuja</option>
-                                    <option value="Kaduna">Kaduna</option>
-                                    <option value="Osun"> Osun </option>
-                                    <option value="Lagos">Lagos</option>
-
-
-                                </SelectInputValue>
-
-                                <SelectInputValue
-                                    name="Location"
-                                    id="city"
-                                    value={category}
-                                    onChange={onChange}
-
-                                >
-                                    <option defaultValue={category} >{category}</option>
-                                    <option value="Real Estate/Property">Real Estate/Property</option>
-                                    <option>Beauty &amp; Fashion</option>
-                                    <option>Technology</option>
-                                    <option>Catering &amp; Decoration</option>
-                                    <option>Agriculture</option>
-                                    <option>Restaurant</option>
-                                    <option>Construction and Renovation</option>
-                                    <option>Transportation</option>
-                                    <option>News &amp; Media</option>
-                                    <option>Health and Fitness</option>
-                                    <option>Education &amp; Schools</option>
-                                    <option>Electronics</option>
-
-                                </SelectInputValue>
-
-
-
-
+                                />
+                                
 
 
                             </div>
@@ -210,7 +280,7 @@ const dispatch =useDispatch()
 
                                 <TextInput
                                     onChange={onChange}
-                                    name="url"
+                                    name="website"
                                     value={website}
                                     id="url"
                                     placeholder="url" />
@@ -218,10 +288,10 @@ const dispatch =useDispatch()
 
                                 <TextInput
                                     onChange={onChange}
-                                    name="location"
-                                    value={location}
+                                    name="city"
+                                    value={city}
                                     id="locations"
-                                    placeholder="location" />
+                                    placeholder="City" />
 
 
                             </div>

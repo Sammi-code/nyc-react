@@ -9,6 +9,7 @@ import {
   UPLOADS,
   DELETE_CONTACT,
   ADVERT,
+  EDIT_USERS
   // FETCH_BUSINESS
 } from 
 "./type";
@@ -39,6 +40,7 @@ const initialState = {
       state: "osun",
     },
   ],
+  editUSer:{},
   modal: true,
   user:{},
   users: [],
@@ -61,6 +63,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         contacts:[ state.contacts,action.payload],
+      
+      };
+    case EDIT_USERS:
+      return {
+        ...state,
+        editUSer:action.payload
       
       };
 

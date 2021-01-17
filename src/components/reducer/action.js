@@ -3,7 +3,7 @@ import swal from 'sweetalert';
 // import useEffect from "react";
 // import useFetch from "./usage"
 // import { Redirect } from "react-router-dom";
-import { EDIT_RECORD, GET_CONTACTS, STATE_MODAL, SIGNUP_USER, FETCH_FAQ ,UPLOADS,DELETE_CONTACT,ADVERT,LOGIN_USER,FETCH_BUSINESS} from "./type";
+import { EDIT_RECORD, GET_CONTACTS, STATE_MODAL, SIGNUP_USER, FETCH_FAQ ,EDIT_USERS ,UPLOADS,DELETE_CONTACT,ADVERT,LOGIN_USER,FETCH_BUSINESS} from "./type";
 
 
 export const getContacts = () => {
@@ -30,6 +30,77 @@ export const editRecord = (form) => {
      payload: form,
   };
 };
+
+export const editUsers  = (id) => {
+ 
+  return async (dispatch) => {
+
+    try {
+
+        await axios.put
+            ("https://naija-yellow-catalogue.herokuapp.com/api/users/profile", {id})
+        dispatch({
+            type: EDIT_USERS,
+            payload: id
+        }
+        )
+    } catch (e) {
+
+        dispatch({
+            type: EDIT_USERS,
+            payload: id
+        }
+        )
+      }
+    }
+  }
+// export const editUsers = (form) => {
+ 
+//   console.log("action")
+
+//   return (dispatch) => {
+//   fetch("https://naija-yellow-catalogue.herokuapp.com/api/users/profile/", 
+//   {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(form),
+//   })
+//   .then((resp) => 
+//   {
+// console.log(resp)    
+// return resp.json()})
+
+//     .then((put) => {
+//       console.log(post)
+//       if(post.status===200){
+
+//         swal({
+//           title: "Congratulations!",
+//           text: "You have Registered Successfully",
+//           icon: "success",
+//           button: "Proceed",
+//         })
+
+//         dispatch({
+//           type: EDIT_USERS,
+//      payload: put,
+  
+//         })
+//       }else {
+//         swal({
+//           title: "Error!",
+//           text: "Oops, there was an error",
+//           icon: "warning",
+//           button: "Ok",
+//         })
+//       }
+      
+//     })
+// };
+// }
+
 
 // export const uploadDoc = () => {
 //   return {
@@ -108,37 +179,6 @@ export const fetchFaq= () => {
 
 
 
-// FUNCTION CONTROLLING SIGNUP ACTION
-
-// export const signupUser = userData => {
-  
-//   // eslint-disable-next-line react-hooks/rules-of-hooks
-//   const signupData = useFetch('https://naija-yellow-catalogue.herokuapp.com/signup', { userData })
-
-//   if (!signupData.response){
-//     console.log("Wahala Dey")
-//   } else {
-//     console.log(signupData.response.data)
-//   }
-
-  // useEffect(()=> {
-
-  // return (dispatch) => {
-  //   axios.post('https://naija-yellow-catalogue.herokuapp.com/signup', { userData })
-  //   .then(response => {
-  //     console.log(response);
-  //     // dispatch ({
-  //     //   type: SIGNUP_USER,
-  //     //   payload: response.data
-  //     // })
-  //     this.setState(response)
-  //   })
-  //   .catch(error => {
-  //     console.log(error)
-  //   })
-  // }})
-
-// }
 
 
 
@@ -147,7 +187,7 @@ export const signupUser = (userData) => {
   console.log("action")
 
   return (dispatch) => {
-  fetch("https://naija-yellow-catalogue.herokuapp.com/signup", 
+  fetch("https://naija-yellow-catalogue.herokuapp.com/api/signup", 
   {
     method: "POST",
     headers: {
@@ -162,7 +202,7 @@ return resp.json()})
 
     .then((post) => {
       console.log(post)
-      if(post.data){
+      if(post.status===200){
 
         swal({
           title: "Congratulations!",
@@ -196,17 +236,7 @@ return resp.json()})
       }
       
     })
-    // if(userData) {
-    //   return swal({
-    //     title: "Great job!",
-    //     text: "You have Registered Successfully",
-    //     icon: "success",
-    //     button: "Proceed",
-    //   })
-      
-      // .then(
-      //   window.location.reload()
-      // );
+    
       
     
   }
@@ -216,7 +246,7 @@ return resp.json()})
 export const loginUser = (userData, action) => {
 
   return (dispatch) => {
-  fetch("https://naija-yellow-catalogue.herokuapp.com/login/", 
+  fetch("https://naija-yellow-catalogue.herokuapp.com/api/login/", 
   {
     method: "POST",
     headers: {
@@ -279,7 +309,6 @@ export const loginUser = (userData, action) => {
       })
     }
     
-
 
   }
 
